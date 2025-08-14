@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
+import StatusBadge from "@/components/StatusBadge";
 import axiosInstance from "@/lib/axios";
 import { Link } from "expo-router";
 import { Colors } from "@/constants/Colors";
@@ -26,28 +27,7 @@ interface Facility {
 	updatedAt: string;
 }
 
-const StatusBadge = memo(
-	({
-		status,
-	}: {
-		status: Facility["status"];
-	}) => {
-		const isActive = status === "active";
-		const currentStatus = isActive
-			? { bg: "rgba(34, 197, 94, 0.1)", text: "#22c55e" }
-			: { bg: "rgba(239, 68, 68, 0.1)", text: "#ef4444" }; 
 
-		return (
-			<View
-				style={[styles.badgeContainer, { backgroundColor: currentStatus.bg }]}>
-				<ThemedText
-					style={[styles.badgeText, { color: currentStatus.text }]}>
-					{isActive ? "Available" : "Unavailable"}
-				</ThemedText>
-			</View>
-		);
-	}
-);
 
 const FacilityCard = memo(
 	({
