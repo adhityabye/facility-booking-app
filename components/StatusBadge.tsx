@@ -21,6 +21,8 @@ const StatusBadge = memo(({ status }: StatusBadgeProps) => {
 	);
 });
 
+StatusBadge.displayName = "StatusBadge";
+
 const styles = StyleSheet.create({
 	badgeContainer: {
 		borderRadius: 20,

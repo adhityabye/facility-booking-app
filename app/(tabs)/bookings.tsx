@@ -128,6 +128,7 @@ const BookingCard = memo(
 		);
 	}
 );
+BookingCard.displayName = "BookingCard";
 
 const FilterPill = ({ label, value, activeValue, setActiveValue }: any) => (
 	<TouchableOpacity
@@ -162,6 +163,7 @@ const SortButton = memo(({ sortDirection, setSortDirection }: any) => {
 		</TouchableOpacity>
 	);
 });
+SortButton.displayName = "SortButton";
 
 export default function BookingsScreen() {
 	const [status, setStatus] = useState<"booked" | "cancelled" | "">("");
@@ -308,7 +310,7 @@ export default function BookingsScreen() {
 					textAlign: "center",
 				}}
 			>
-				You don't have any bookings for this filter.
+				You don&apos;t have any bookings for this filter
 			</ThemedText>
 			<TouchableOpacity
 				style={styles.bookButton}

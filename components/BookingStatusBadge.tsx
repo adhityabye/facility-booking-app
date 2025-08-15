@@ -55,6 +55,8 @@ const BookingStatusBadge = memo(({ status, bookingDate }: BookingStatusBadgeProp
 	);
 });
 
+BookingStatusBadge.displayName = "BookingStatusBadge";
+
 const styles = StyleSheet.create({
 	badgeContainer: {
 		borderRadius: 20,

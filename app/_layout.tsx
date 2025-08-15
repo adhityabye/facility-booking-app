@@ -1,6 +1,6 @@
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, Redirect, useRouter, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export default function RootLayout() {
       setIsHydrating(false);
     };
     loadAuth();
-  }, []);
+  }, [hydrate]);
 
   useEffect(() => {
     if (!loaded || isHydrating) {
@@ -40,7 +40,7 @@ export default function RootLayout() {
     } else if (!isAuthenticated && !inAuthGroup) {
       router.replace('/(auth)/login');
     }
-  }, [isAuthenticated, segments, loaded, isHydrating]);
+  }, [isAuthenticated, segments, loaded, isHydrating, router]);
 
   if (!loaded || isHydrating) {
     return null;

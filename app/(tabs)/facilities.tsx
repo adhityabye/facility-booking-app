@@ -27,8 +27,6 @@ interface Facility {
 	updatedAt: string;
 }
 
-
-
 const FacilityCard = memo(
 	({
 		item,
@@ -80,6 +78,8 @@ const FacilityCard = memo(
 		);
 	}
 );
+
+FacilityCard.displayName = "FacilityCard";
 
 export default function FacilitiesScreen() {
 	const [search, setSearch] = useState("");

@@ -65,7 +65,7 @@ export default function FacilityDetailScreen() {
 		enabled: !!facilityId,
 	});
 
-	const { data: availability, isLoading: isLoadingAvailability, isError: isErrorAvailability, error: errorAvailability, refetch: refetchAvailability } = useQuery<Availability, Error>({
+	const { data: availability, isLoading: isLoadingAvailability, isError: isErrorAvailability } = useQuery<Availability, Error>({
 		queryKey: ["availability", facilityId, format(selectedDate, "yyyy-MM-dd")],
 		queryFn: async () => {
 			const response = await axiosInstance.get(

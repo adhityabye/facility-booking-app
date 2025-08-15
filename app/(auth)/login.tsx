@@ -127,7 +127,7 @@ export default function LoginScreen() {
 
 			<Link href="/(auth)/register" style={styles.link}>
 				<ThemedText type="link" style={{ color: Colors.text }}>
-					Don't have an account?{" "}
+					Dont have an account?{" "}
 					<ThemedText style={{ color: Colors.tint, fontWeight: "bold" }}>
 						Register here.
 					</ThemedText>

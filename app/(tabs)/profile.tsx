@@ -182,7 +182,7 @@ export default function ProfileScreen() {
 
 					<ThemedText type="subtitle" style={styles.passwordSectionTitle}>Change Password</ThemedText>
           <ThemedText style={styles.passwordDescription}>
-            simply enter same password if you don't want to change
+            input same password if you do not want to change
            </ThemedText>
 
 							<ThemedText style={styles.label}>Current Password</ThemedText>
@@ -317,17 +317,17 @@ const styles = StyleSheet.create({
 		marginBottom: 16,
 		marginTop: -10,
 	},
-	  passwordSectionTitle: {
+	passwordSectionTitle: {
     marginTop: 20,
     marginBottom: 16,
     color: Colors.text,
-  },
-  passwordDescription: {
+},
+  	passwordDescription: {
     fontSize: 14,
     color: Colors.textSecondary,
     marginBottom: 16,
     textAlign: "left",
-  },
+},
 	saveButton: {
 		backgroundColor: Colors.tint,
 		padding: 16,
