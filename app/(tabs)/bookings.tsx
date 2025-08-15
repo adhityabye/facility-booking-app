@@ -23,6 +23,7 @@ import { Colors } from "@/constants/Colors";
 import BookingStatusBadge from "@/components/BookingStatusBadge";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import * as Calendar from "expo-calendar";
 
 interface Booking {
 	id: number;
@@ -53,7 +54,15 @@ interface Facility {
 }
 
 const BookingCard = memo(
-	({ item, onCancel }: { item: Booking; onCancel: (id: number) => void }) => {
+	({
+		item,
+		onCancel,
+		onAddReminder,
+	}: {
+		item: Booking;
+		onCancel: (id: number) => void;
+		onAddReminder: (booking: Booking) => void;
+	}) => {
 		const isCancelable = item.status === "booked";
 
 		return (
@@ -89,16 +98,32 @@ const BookingCard = memo(
 						<ThemedText style={styles.infoText}>{item.notes}</ThemedText>
 					</View>
 				)}
-				{isCancelable && (
-					<TouchableOpacity
-						style={styles.cancelButton}
-						onPress={() => onCancel(item.id)}
-					>
-						<ThemedText style={styles.cancelButtonText}>
-							Cancel Booking
-						</ThemedText>
-					</TouchableOpacity>
-				)}
+				<View style={styles.actionsContainer}>
+					{isCancelable && (
+						<TouchableOpacity
+							style={[styles.actionButton, styles.cancelButton]}
+							onPress={() => onCancel(item.id)}
+						>
+							<Ionicons name="close-circle-outline" size={20} color="#ff3b30" />
+							<ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
+						</TouchableOpacity>
+					)}
+					{item.status === "booked" && (
+						<TouchableOpacity
+							style={[styles.actionButton, styles.reminderButton]}
+							onPress={() => onAddReminder(item)}
+						>
+							<Ionicons
+								name="notifications-outline"
+								size={20}
+								color={Colors.tint}
+							/>
+							<ThemedText style={styles.reminderButtonText}>
+								Add Reminder
+							</ThemedText>
+						</TouchableOpacity>
+					)}
+				</View>
 			</View>
 		);
 	}
@@ -220,6 +245,45 @@ export default function BookingsScreen() {
 		);
 	};
 
+	const handleAddReminder = async (booking: Booking) => {
+		const { status } = await Calendar.requestCalendarPermissionsAsync();
+		if (status !== "granted") {
+			Alert.alert(
+				"Permission Required",
+				"Please grant calendar permissions to add a reminder."
+			);
+			return;
+		}
+
+		const eventDetails = {
+			title: `Booking: ${booking.facilityName}`,
+			startDate: new Date(
+				new Date(booking.bookingDate).setHours(booking.startHour)
+			),
+			endDate: new Date(new Date(booking.bookingDate).setHours(booking.endHour)),
+			notes: booking.notes || "",
+			timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+		};
+
+		try {
+			const calendars = await Calendar.getCalendarsAsync(
+				Calendar.EntityTypes.EVENT
+			);
+			const defaultCalendar = calendars.find((cal) => cal.isPrimary);
+
+			if (!defaultCalendar) {
+				Alert.alert("No Calendar", "No default calendar found on your device.");
+				return;
+			}
+
+			await Calendar.createEventAsync(defaultCalendar.id, eventDetails);
+			Alert.alert("Success", "Reminder added to your calendar!");
+		} catch (error) {
+			console.error(error);
+			Alert.alert("Error", "Failed to add reminder. Please try again.");
+		}
+	};
+
 	const bookings =
 		data?.pages
 			.flatMap((page) => page.bookings)
@@ -301,7 +365,11 @@ export default function BookingsScreen() {
 				<FlatList
 					data={bookings}
 					renderItem={({ item }) => (
-						<BookingCard item={item} onCancel={handleCancelBooking} />
+						<BookingCard
+							item={item}
+							onCancel={handleCancelBooking}
+							onAddReminder={handleAddReminder}
+						/>
 					)}
 					keyExtractor={(item) => item.id.toString()}
 					showsVerticalScrollIndicator={false}
@@ -414,16 +482,34 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: Colors.textSecondary,
 	},
-	cancelButton: {
+	actionsContainer: {
+		flexDirection: "row",
+		justifyContent: "flex-end",
 		marginTop: 16,
-		padding: 12,
-		borderRadius: 12,
-		backgroundColor: "rgba(255, 59, 48, 0.1)",
+		gap: 8,
+	},
+	actionButton: {
+		flexDirection: "row",
 		alignItems: "center",
+		paddingVertical: 10,
+		paddingHorizontal: 16,
+		borderRadius: 12,
+	},
+	cancelButton: {
+		backgroundColor: "rgba(255, 59, 48, 0.1)",
 	},
 	cancelButtonText: {
 		color: "#ff3b30",
 		fontWeight: "bold",
+		marginLeft: 6,
+	},
+	reminderButton: {
+		backgroundColor: "rgba(0, 122, 255, 0.1)",
+	},
+	reminderButtonText: {
+		color: Colors.tint,
+		fontWeight: "bold",
+		marginLeft: 6,
 	},
 	emptyContainer: {
 		flex: 1,
