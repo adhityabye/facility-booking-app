@@ -4,7 +4,7 @@ import { TextInput, Button, StyleSheet, ActivityIndicator, Alert } from "react-n
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import axiosInstance from "../../lib/axios";
 import { useAuthStore } from "../../lib/auth";
 import { Colors } from "@/constants/Colors";
@@ -24,6 +24,7 @@ const RegisterSchema = z
 type RegisterFormInputs = z.infer<typeof RegisterSchema>;
 
 export default function RegisterScreen() {
+  const router = useRouter();
   const { signIn } = useAuthStore();
   const {
     control,
@@ -40,9 +41,8 @@ export default function RegisterScreen() {
         email: data.email,
         password: data.password,
       });
-      const { accessToken, refreshToken } = response.data;
-      await signIn({ accessToken, refreshToken });
       Alert.alert("Registration Successful", "You have been successfully registered!");
+      router.replace('/(auth)/login');
     } catch (error: any) {
       console.log("Registration error:", error);
       console.log("Error response data:", error.response?.data);
